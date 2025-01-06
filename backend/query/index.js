@@ -23,9 +23,10 @@ app.post("/events", (req, res) => {
   }
 
   if (type === "CommentCreated") {
-    const { id, content, postId } = data;
+    const { id, content, postId, status } = data;
+
     const curComments = posts[postId].comments;
-    curComments.push({ id, content });
+    curComments.push({ id, content, status });
   }
 
   if (type === "PostDelete") {
@@ -33,6 +34,13 @@ app.post("/events", (req, res) => {
     delete posts[postId];
   }
 
+  if (type === "CommentUpdated") {
+    const { postId, id, status, content } = data;
+    const post = posts[postId];
+    const comment = post.comments.find((comment) => comment.id === id);
+    comment.status = status;
+    comment.content = content;
+  }
   res.send({});
 });
 
